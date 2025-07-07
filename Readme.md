@@ -202,8 +202,6 @@
 #### Представитель ФТАМ (главный секретарь)
 ---
 
-Figma: https://www.figma.com/design/2sk4gnQx7lxx2VrOczgiXC/WL?node-id=0-1&t=wu2BeWPd7QS3rfMS-1
-
 ~30-?? лет.
 
 Заинтересован в:
@@ -224,6 +222,9 @@ Figma: https://www.figma.com/design/2sk4gnQx7lxx2VrOczgiXC/WL?node-id=0-1&t=wu2B
    3. пользователь выбирает спортсмена;
    4. пользователь вводит необходимую информацию о спортсмене;
    4. пользователь подтверждает обновление информации.
+
+---
+Figma: https://www.figma.com/design/2sk4gnQx7lxx2VrOczgiXC/WL?node-id=0-1&t=wu2BeWPd7QS3rfMS-1
 
 
 
