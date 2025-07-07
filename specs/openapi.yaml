@@ -1,0 +1,1450 @@
+openapi: 3.0.3
+info:
+  title: Приложение для федерации тяжелой атлетики г. Москвы (ФТАМ)
+  description: Приложение для спортcменов, тренеров, организаторов и представителей ФТАМ - автоматизация деятельности ФТАМ.
+  version: 1.0.11
+
+# servers:
+#   - url: https://wlmoscow
+tags:
+  - name: sportsmen
+    description: Операции со спортсменами
+  - name: coaches
+    description: Операции с тренерами
+  - name: competitions
+    description: Операции с соревнованиями
+  - name: tcamps
+    description: Операции со сборами
+  - name: users
+    description: Операции с пользователями
+paths:
+  /sportsmen/{id}/results:
+    get:
+      tags:
+        - sportsmen
+      summary: Получить все результаты спортсмена
+      operationId: getResultsBySmId
+      parameters:
+        - name: id
+          in: path
+          description: ID спортсмена
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllSmResults'          
+        '400':
+          description: Invalid ID supplied
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+  /competitions/{id}/results:
+    get:
+      tags:
+        - competitions
+      summary: Получить все результаты соревнования
+      operationId: getResultsByCompId
+      parameters:
+        - name: id
+          in: path
+          description: ID соревнований
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllCompResults'          
+        '400':
+          description: Invalid ID supplied
+        '500':
+          description: Internal Server Error
+  /coaches/{id}/sportsmen/results:
+    get:
+      tags:
+        - coaches
+      summary: Получить все результаты спортсменов тренера
+      operationId: getResultsByCoachId
+      parameters:
+        - name: id
+          in: path
+          description: ID тренера
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllResults'          
+        '400':
+          description: Invalid ID supplied
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+  /competitions/{id}:
+    delete:
+      tags:
+        - competitions
+      summary: Удалить соревнование
+      operationId: deleteComp
+      parameters:
+        - name: id
+          in: path
+          description: ID соревнования
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+            description: Successful operation
+        '401':
+          description: Unauthorized
+        '404':
+            description: Not found
+        '500':
+            description: Internal Server Error
+  /tcamps:
+    get:
+      tags:
+        - tcamps
+      summary: Получить все сборы
+      operationId: getTCamps
+      parameters:
+        - name: date
+          in: query
+          description: Дата начала сборов
+          required: false
+          schema:
+            type: string
+            format: datetime(utc)
+        - name: city
+          in: query
+          description: Город
+          required: false
+          schema:
+            example: "Москва"
+            type: string
+        - name: sort
+          in: query
+          description: Сортировка. Список имен атрибутов, разделенных запятыми, для сортировки. Если перед именем атрибута стоит знак минус, то сортировка производится по убыванию, в противном случае — по возрастанию.
+          required: false
+          schema:
+            example: date,-city
+            type: string
+        - name: page
+          in: query
+          description: Пагинация - номер страницы.
+          required: false
+          schema:
+            example: 3
+            type: integer
+        - name: batch
+          in: query
+          description: Пагинация - количество элементов на странице
+          required: false
+          schema:
+            example: 10
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllTCamps'
+        '500':
+          description: Internal Server Error
+    post:
+      tags:
+        - tcamps
+      summary: Организация сборов
+      operationId: createTCamp
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTCamp'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TCamp' 
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+  /tcamps/{id}:
+    delete:
+      tags:
+        - tcamps
+      summary: Удалить сборы
+      operationId: deleteTCamp
+      parameters:
+        - name: id
+          in: path
+          description: ID сборов
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+            description: Successful operation
+        '401':
+          description: Unauthorized
+        '404':
+            description: Not found
+        '500':
+            description: Internal Server Error
+  /competitions:
+    get:
+      tags:
+        - competitions
+      summary: Получить все соревнования
+      operationId: getComps
+      parameters:
+        - name: name
+          in: query
+          description: Название мероприятия
+          required: false
+          schema:
+            type: string
+            example: "Кубок Москвы"
+        - name: date
+          in: query
+          description: Дата начала (возможно только год)
+          required: false
+          schema:
+            type: string
+            format: datetime(utc)
+        - name: city
+          in: query
+          description: Город
+          required: false
+          schema:
+            example: "Москва"
+            type: string
+        - name: age
+          in: query
+          description: Возрастная группа
+          required: false
+          schema:
+            example: "Юниоры, юниорки"
+            type: string
+        - name: sort
+          in: query
+          description: Сортировка. Список имен атрибутов, разделенных запятыми, для сортировки. Если перед именем атрибута стоит знак минус, то сортировка производится по убыванию, в противном случае — по возрастанию.
+          required: false
+          schema:
+            example: date,-city
+            type: string
+        - name: page
+          in: query
+          description: Пагинация - номер страницы.
+          required: false
+          schema:
+            example: 3
+            type: integer
+        - name: batch
+          in: query
+          description: Пагинация - количество элементов на странице
+          required: false
+          schema:
+            example: 10
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllComps'
+        '500':
+          description: Internal Server Error
+    post:
+      tags:
+        - competitions
+      summary: Организация соревнований
+      operationId: createComp
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateComp'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comp'
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+  /sportsmen:
+    get:
+      tags:
+        - sportsmen
+      summary: Получить всех спортсменов
+      description: Возможно в параметрах нужно полное ФИО
+      operationId: getSportsmen
+      parameters:
+        - name: surname
+          in: query
+          description: Фамилия
+          required: false
+          schema:
+            type: string
+            example: "Иванов"
+        - name: name
+          in: query
+          description: Имя
+          required: false
+          schema:
+            type: string
+            example: "Иван"
+        - name: patronimyc
+          in: query
+          description: Отчество
+          required: false
+          schema:
+            type: string
+            example: "Иванович"
+        - name: sort
+          in: query
+          description: Сортировка. Список имен атрибутов, разделенных запятыми, для сортировки. Если перед именем атрибута стоит знак минус, то сортировка производится по убыванию, в противном случае — по возрастанию.
+          required: false
+          schema:
+            example: -name
+            type: string
+        - name: page
+          in: query
+          description: Пагинация - номер страницы.
+          required: false
+          schema:
+            example: 3
+            type: integer
+        - name: batch
+          in: query
+          description: Пагинация - количество элементов на странице
+          required: false
+          schema:
+            example: 10
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllSportsmen'
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+  /coaches/{id}/sportsmen/{sm_id}:
+    delete:
+      tags:
+        - coaches
+      summary: Отменить запись спортсмена к тренеру
+      operationId: deleteSmCoach
+      parameters:
+        - name: id
+          in: path
+          description: ID тренера
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: sm_id
+          in: path
+          description: ID спортсмена
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+            description: Successful operation
+        '401':
+          description: Unauthorized
+        '404':
+            description: Not found
+        '500':
+            description: Internal Server Error
+  /coaches/{id}/sportsmen:
+    get:
+      tags:
+        - coaches
+      summary: Получить всех спортсменов тренера
+      description: Возможно в параметрах нужно полное ФИО
+      operationId: getSmCoach
+      parameters:
+        - name: id
+          in: path
+          description: ID тренера
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: surname
+          in: query
+          description: Фамилия
+          required: false
+          schema:
+            type: string
+            example: "Иванов"
+        - name: name
+          in: query
+          description: Имя
+          required: false
+          schema:
+            type: string
+            example: "Иван"
+        - name: patronimyc
+          in: query
+          description: Отчество
+          required: false
+          schema:
+            type: string
+            example: "Иванович"
+        - name: sort
+          in: query
+          description: Сортировка. Список имен атрибутов, разделенных запятыми, для сортировки. Если перед именем атрибута стоит знак минус, то сортировка производится по убыванию, в противном случае — по возрастанию.
+          required: false
+          schema:
+            example: -name
+            type: string
+        - name: page
+          in: query
+          description: Пагинация - номер страницы.
+          required: false
+          schema:
+            example: 3
+            type: integer
+        - name: batch
+          in: query
+          description: Пагинация - количество элементов на странице
+          required: false
+          schema:
+            example: 10
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllSportsmen'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Sportsmen not found
+        '500':
+          description: Internal Server Error
+  /sportsmen/{id}:
+    get:
+      tags:
+        - sportsmen
+      summary: Получить спортсмена по ID
+      operationId: getSportsmanById
+      parameters:
+        - name: id
+          in: path
+          description: ID спортсмена
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SportsmanExt'
+        '400':
+          description: Invalid ID supplied
+        '401':
+          description: Unauthorized
+        '404':
+          description: Sportsman not found
+        '500':
+          description: Internal Server Error
+    patch:
+      tags:
+        - sportsmen
+      summary: Обновление секретарем информации о спортсмене
+      description: Обновление информации о сертификате и допуске на соревнования
+      operationId: UpdateSportsman
+      parameters:
+          - name: id
+            in: path
+            description: ID спортсмена
+            required: true
+            schema:
+              type: string
+              format: uuid
+      requestBody:
+        description: Обновление информации о существующем спортсмене
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateSportsman'
+        required: false
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SportsmanExt'
+        '400':
+          description: Invalid ID supplied
+        '401':
+          description: Unauthorized
+        '404':
+          description: Sportsman not found
+        '500':
+          description: Internal Server Error
+    delete:
+      tags:
+        - sportsmen
+      summary: Удалить спортсмена
+      operationId: deleteSportsman
+      parameters:
+        - name: id
+          in: path
+          description: ID спортсмена
+          required: true
+          schema:
+              type: string
+              format: uuid
+      responses:
+        '204':
+            description: Successful operation
+        '401':
+          description: Unauthorized
+        '404':
+            description: Sportsman not found
+        '500':
+            description: Internal Server Error
+  /coaches:
+    get:
+      tags:
+        - coaches
+      summary: Получить всех тренеров
+      description: Возможно в параметрах нужно полное ФИО
+      operationId: getCoaches
+      parameters:
+        - name: surname
+          in: query
+          description: Фамилия
+          required: false
+          schema:
+            type: string
+            example: "Иванов"
+        - name: name
+          in: query
+          description: Имя
+          required: false
+          schema:
+            type: string
+            example: "Иван"
+        - name: patronimyc
+          in: query
+          description: Отчество
+          required: false
+          schema:
+            type: string
+            example: "Иванович"
+        - name: sort
+          in: query
+          description: Сортировка. Список имен атрибутов, разделенных запятыми, для сортировки. Если перед именем атрибута стоит знак минус, то сортировка производится по убыванию, в противном случае — по возрастанию.
+          required: false
+          schema:
+            example: -name
+            type: string
+        - name: page
+          in: query
+          description: Пагинация - номер страницы.
+          required: false
+          schema:
+            example: 3
+            type: integer
+        - name: batch
+          in: query
+          description: Пагинация - количество элементов на странице
+          required: false
+          schema:
+            example: 10
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllCoaches'
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+          
+  /coaches/{id}:
+    get:
+      tags:
+        - coaches
+      summary: Получить тренера по ID
+      operationId: getCoachById
+      parameters:
+        - name: id
+          in: path
+          description: ID тренера
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Coach'          
+        '400':
+          description: Invalid ID supplied
+        '401':
+          description: Unauthorized
+        '404':
+          description: Sportsman not found
+        '500':
+          description: Internal Server Error
+    delete:
+      tags:
+        - coaches
+      summary: Удалить тренера
+      operationId: deleteCoach
+      parameters:
+        - name: id
+          in: path
+          description: ID тренера
+          required: true
+          schema:
+              type: string
+              format: uuid
+      responses:
+        '204':
+            description: successful operation
+        '401':
+          description: Unauthorized
+        '404':
+            description: Coach not found
+        '500':
+            description: Internal Server Error
+  /sportsmen/{id}/coach:
+    post:
+      tags:
+        - sportsmen
+      summary: Запись спортсмена к тренеру
+      parameters:
+        - name: id
+          in: path
+          description: ID спортсмена
+          required: true
+          schema:
+              type: string
+              format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CId'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SmCoach'
+        '400':
+          description: Invalid ID supplied
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal Server Error
+  /competitions/{id}/sportsman:
+    post:
+      tags:
+        - competitions
+      summary: Запись спортсмена на соревнования
+      parameters:
+        - name: id
+          in: path
+          description: ID соревнования
+          required: true
+          schema:
+              type: string
+              format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCompApplication'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompApplication'
+        '400':
+          description: Invalid ID supplied
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal Server Error
+  /tcamps/{id}/sportsman:
+    post:
+      tags:
+        - tcamps
+      summary: Запись спортсмена на сборы
+      parameters:
+        - name: id
+          in: path
+          description: ID сборов
+          required: true
+          schema:
+              type: string
+              format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTCampApplication'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TCampApplication'
+        '400':
+          description: Invalid ID supplied
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal Server Error
+  
+  /users/signup:
+    post:
+      tags:
+        - users
+      summary: Создание пользователя
+      operationId: createUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUser'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '500':
+          description: Internal Server Error
+          
+  /users/login:
+    post:
+      tags:
+        - users
+      summary: Вход в аккаунт
+      operationId: loginUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginUser'
+        required: true
+      responses:
+        '200':
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+                  expires_in:
+                    type: integer
+                    example: 3600
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        example: 123e4567-e89b-12d3-a456-426655440000
+                      email:
+                        type: string
+                        format: email
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+  /users/logout:
+    get:
+      tags:
+        - users
+      summary: Выход их аккаунта
+      description: ''
+      operationId: logoutUser
+      parameters: []
+      responses:
+        default:
+          description: Successful operation
+  /users/{id}:
+    get:
+      tags:
+        - users
+      summary: Получить пользователя по ID
+      description: ''
+      operationId: getUserByID
+      parameters:
+        - name: id
+          description: ID пользователя
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+        '500':
+          description: Internal Server Error
+    put:
+      tags:
+        - users
+      summary: Обновить email и пароль пользователя
+      description: Для авторизованных пользователей.
+      operationId: updateUser
+      parameters:
+        - name: id
+          in: path
+          description: ID пользователя
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUser'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+    delete:
+      tags:
+        - users
+      summary: Удалить пользователя
+      description: Для авторизованных пользователей.
+      operationId: deleteUser
+      parameters:
+        - name: id
+          in: path
+          description: ID пользователя
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Successful operation
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal Server Error
+  /users/{id}/competitions:
+    get:
+      tags:
+        - users
+      summary: Получить все соревнования организатора
+      operationId: getCompsByOrgId
+      parameters:
+        - name: id
+          in: path
+          description: ID организатора
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllComps'        
+        '400':
+          description: Invalid ID supplied
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+  /users/{id}/tcamps:
+    get:
+      tags:
+        - tcamps
+      summary: Получить все сборы организатора
+      operationId: getTCampsByOrgId
+      parameters:
+        - name: id
+          in: path
+          description: ID организатора
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllTCamps'          
+        '400':
+          description: Invalid ID supplied
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+components:
+  schemas:
+    TCamp:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426655440000
+        city:
+          type: string
+          example: Москва
+        address:
+          type: string
+          example: Московская 1
+        beg_date:
+          type: string
+          format: date-time
+        end_date:
+          type: string
+          format: date-time
+    Comp:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426655440000
+        name:
+          type: string
+          example: Кубок Москвы
+        city:
+          type: string
+          example: Москва
+        address:
+          type: string
+          example: Московская 1
+        beg_date:
+          type: string
+          format: date-time
+        end_date:
+          type: string
+          format: date-time
+        age:
+          type: string
+          example: Юниоры, юниорки
+        min_sports_cat:
+          type: string
+          example: КМС
+        antidoping:
+          type: boolean
+          example: true
+    Sportsman:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426655440000
+        surname:
+          type: string
+          example: Иванов
+        name:
+          type: string
+          example: Иван
+        patronymic:
+          type: string
+          example: Иванович
+        birthday:
+          type: string
+          format: date-time
+        moscow_team:
+          type: boolean
+          example: true
+        sports_category:
+          type: string
+          example: КМС
+        gender:
+          type: boolean
+          example: false
+    SportsmanExt:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426655440000
+        surname:
+          type: string
+          example: Иванов
+        name:
+          type: string
+          example: Иван
+        patronymic:
+          type: string
+          example: Иванович
+        birthday:
+          type: string
+          format: date-time
+        moscow_team:
+          type: boolean
+          example: true
+        sports_category:
+          type: string
+          example: КМС
+        gender:
+          type: boolean
+          example: false
+        adoping_validity:
+          type: string
+          format: date-time
+        access_validity:
+          type: string
+          format: date-time
+        access_institution:
+          type: string
+          example: 1-й диспансер
+    Coach:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426655440000
+        surname:
+          type: string
+          example: Иванов
+        name:
+          type: string
+          example: Иван
+        patronymic:
+          type: string
+          example: Иванович
+        experience:
+          type: integer
+          example: 10
+        birthday:
+          type: string
+          format: date-time
+        gender:
+          type: boolean
+          example: false
+    Result:
+      type: object
+      properties:
+        sm_id:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426655440000
+        comp_id:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426655440001
+        comp_name:
+          type: string
+          example: Кубок Москвы
+        sm_fullname:
+          type: string
+          example: Иванов Иван Иванович
+        beg_date:
+          type: string
+          format: date-time
+        end_date:
+          type: string
+          format: date-time
+        city:
+          type: string
+          example: Москва
+        weight_category:
+          type: string
+          example: 109+
+        snatch:
+          type: integer
+          example: 120
+        clean_and_jerk:
+          type: integer
+          example: 200
+        place:
+          type: integer
+          example: 2
+    CompApplication:
+      type: object
+      properties:
+        comp_id:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426655440001
+        sm_id:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426655440000
+        weight_category:
+          type: string
+          example: 109+
+        start_snatch:
+          type: integer
+          example: 100
+        start_clean_and_jerk:
+          type: integer
+          example: 140
+    CreateCompApplication:
+      type: object
+      properties:
+        sm_id:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426655440000
+        weight_category:
+          type: string
+          example: 109+
+        start_snatch:
+          type: integer
+          example: 100
+        start_clean_and_jerk:
+          type: integer
+          example: 140
+    TCampApplication:
+      type: object
+      properties:
+        tcamp_id:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426655440001
+        sm_id:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426655440000
+    CreateTCampApplication:
+      type: object
+      properties:
+        sm_id:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426655440000
+    CreateComp:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Кубок Москвы
+        city:
+          type: string
+          example: Москва
+        address:
+          type: string
+          example: Московская 1
+        beg_date:
+          type: string
+          format: date-time
+        end_date:
+          type: string
+          format: date-time
+        age:
+          type: string
+          example: Юниоры, юниорки
+        min_sports_category:
+          type: string
+          example: КМС
+        antidoping:
+          type: boolean
+          example: true
+    CreateTCamp:
+      type: object
+      properties:
+        city:
+          type: string
+          example: Москва
+        address:
+          type: string
+          example: Московская 1
+        beg_date:
+          type: string
+          format: date-time
+        end_date:
+          type: string
+          format: date-time
+    UpdateSportsman:
+      type: object
+      properties:
+        moscow_team:
+          type: boolean
+          example: true
+        sports_category:
+          type: string
+          example: КМС
+        access_institution:
+          type: string
+          example: 1-й диспансер
+        access_validity:
+          type: string
+          format: date-time
+        antidoping_validity:
+          type: string
+          format: date-time
+    AllTCamps:
+          type: array
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/TCamp'
+    AllComps:
+          type: array
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/Comp'
+    AllSportsmen:
+          type: array
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/Sportsman'
+    AllCoaches:
+          type: array
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/Coach'
+    AllResults:
+          type: array
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/Result'
+    SmResult:
+      type: object
+      properties:
+        comp_id:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426655440001
+        comp_name:
+          type: string
+          example: Кубок Москвы
+        sm_fullname:
+          type: string
+          example: Иванов Иван Иванович
+        beg_date:
+          type: string
+          format: date-time
+        end_date:
+          type: string
+          format: date-time
+        city:
+          type: string
+          example: Москва
+        weight_category:
+          type: string
+          example: 109+
+        snatch:
+          type: integer
+          example: 120
+        clean_and_jerk:
+          type: integer
+          example: 200
+        place:
+          type: integer
+          example: 2
+    AllSmResults:
+          type: array
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/SmResult'
+    CompResult:
+      type: object
+      properties:
+        sm_id:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426655440001
+        comp_name:
+          type: string
+          example: Кубок Москвы
+        sm_fullname:
+          type: string
+          example: Иванов Иван Иванович
+        beg_date:
+          type: string
+          format: date-time
+        end_date:
+          type: string
+          format: date-time
+        city:
+          type: string
+          example: Москва
+        weight_category:
+          type: string
+          example: 109+
+        snatch:
+          type: integer
+          example: 120
+        clean_and_jerk:
+          type: integer
+          example: 200
+        place:
+          type: integer
+          example: 2
+    AllCompResults:
+          type: array
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/CompResult'
+    CId:
+      type: object
+      properties:
+        c_id:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426655440001
+    SmCoach:
+      type: object
+      properties:
+        sm_id:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426655440000
+        c_id:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426655440001
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426655440000
+        email:
+          type: string
+          format: email
+        role:
+          type: string
+          example: Coach
+        user_id:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426655440001
+    UpdateUser:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          example: '12345'
+    CreateUser:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          example: '12345'
+        role:
+          type: string
+          example: Coach
+    LoginUser:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          example: '12345'
+        
+
+  # securitySchemes:
+  #   petstore_auth:
+  #     type: oauth2
+  #     flows:
+  #       implicit:
+  #         authorizationUrl: https://petstore3.swagger.io/oauth/authorize
+  #         scopes:
+  #           write:pets: modify pets in your account
+  #           read:pets: read your pets
+  #   api_key:
+  #     type: apiKey
+  #     name: api_key
+  #     in: header

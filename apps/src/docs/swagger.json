@@ -1,0 +1,1384 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Приложение для спортcменов, тренеров, организаторов и представителей ФТАМ - автоматизация деятельности ФТАМ.",
+        "title": "ФТАМ API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "paths": {
+        "/coaches": {
+            "get": {
+                "tags": [
+                    "сoaches"
+                ],
+                "summary": "Получить всех тренеров",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ФИО",
+                        "name": "fullname",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Сортировка",
+                        "name": "sort",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Номер страницы",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Кол-во элементов на странице",
+                        "name": "batch",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/CoachResp"
+                        }
+                    },
+                    "401": {
+                        "description": "unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/coaches/{id}": {
+            "get": {
+                "tags": [
+                    "coaches"
+                ],
+                "summary": "Получить тренера по ID",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/CoachResp"
+                        }
+                    },
+                    "400": {
+                        "description": "invalid ID supplied",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "coaches"
+                ],
+                "summary": "Удалить тренера",
+                "responses": {
+                    "204": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/coaches/{id}/sportsmen": {
+            "get": {
+                "tags": [
+                    "coaches"
+                ],
+                "summary": "Получить всех спортсменов тренера",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/CoachResp"
+                        }
+                    },
+                    "400": {
+                        "description": "invalid ID supplied",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/coaches/{id}/sportsmen/results": {
+            "get": {
+                "tags": [
+                    "coaches"
+                ],
+                "summary": "Получить все результаты спортсменов тренера",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/CoachResp"
+                        }
+                    },
+                    "400": {
+                        "description": "invalid ID supplied",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/coaches/{id}/sportsmen/{sm_id}": {
+            "delete": {
+                "tags": [
+                    "coaches"
+                ],
+                "summary": "Отменить запись спортсмена к тренеру",
+                "responses": {
+                    "204": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/competitions": {
+            "get": {
+                "tags": [
+                    "competitions"
+                ],
+                "summary": "Получить все соревнования",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Название",
+                        "name": "name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Город",
+                        "name": "city",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Сортировка",
+                        "name": "sort",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Номер страницы",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Кол-во элементов на странице",
+                        "name": "batch",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/CompResp"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "competitions"
+                ],
+                "summary": "Создать соревнование",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/CompResp"
+                        }
+                    },
+                    "401": {
+                        "description": "unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/competitions/{id}": {
+            "delete": {
+                "tags": [
+                    "competitions"
+                ],
+                "summary": "Удалить соревнование",
+                "responses": {
+                    "204": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/competitions/{id}/results": {
+            "get": {
+                "tags": [
+                    "competitions"
+                ],
+                "summary": "Получить все результаты соревнования",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/ResultResp"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "invalid ID supplied",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/competitions/{id}/sportsman": {
+            "post": {
+                "tags": [
+                    "competitions"
+                ],
+                "summary": "Запись спортсмена на соревнования",
+                "parameters": [
+                    {
+                        "description": "Заявка",
+                        "name": "application",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/RegForCompReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/RegForCompResp"
+                        }
+                    },
+                    "400": {
+                        "description": "invalid ID supplied",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/sportsmen": {
+            "get": {
+                "tags": [
+                    "sportsmen"
+                ],
+                "summary": "Получить всех спортсменов",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ФИО",
+                        "name": "fullname",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Сортировка",
+                        "name": "sort",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Номер страницы",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Кол-во элементов на странице",
+                        "name": "batch",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/SportsmanResp"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/sportsmen/{id}": {
+            "get": {
+                "tags": [
+                    "sportsmen"
+                ],
+                "summary": "Получить спортсмена по ID",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/SportsmanResp"
+                        }
+                    },
+                    "400": {
+                        "description": "invalid ID supplied",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Обновление информации о сертификате и допуске на соревнования",
+                "tags": [
+                    "sportsmen"
+                ],
+                "summary": "Обновление секретарем информации о спортсмене",
+                "parameters": [
+                    {
+                        "description": "Спортсмен",
+                        "name": "sportsman",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/UpdateSportsmanReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/SportsmanResp"
+                        }
+                    },
+                    "400": {
+                        "description": "invalid ID supplied",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/sportsmen/{id}/coach": {
+            "post": {
+                "tags": [
+                    "sportsmen"
+                ],
+                "summary": "Запись спортсмена к тренеру",
+                "parameters": [
+                    {
+                        "description": "ID тренера",
+                        "name": "coach",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/CoachIDReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/SmCoachResp"
+                        }
+                    },
+                    "400": {
+                        "description": "invalid ID supplied",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/sportsmen/{id}/results": {
+            "get": {
+                "tags": [
+                    "sportsmen"
+                ],
+                "summary": "Получить все результаты спортсмена",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/ResultResp"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "invalid ID supplied",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/tcamps": {
+            "get": {
+                "tags": [
+                    "tcamps"
+                ],
+                "summary": "Получить все сборы",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Город",
+                        "name": "city",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Сортировка",
+                        "name": "sort",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Номер страницы",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Кол-во элементов на странице",
+                        "name": "batch",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/TCampResp"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "tcamps"
+                ],
+                "summary": "Создать сборы",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/TCampResp"
+                        }
+                    },
+                    "401": {
+                        "description": "unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/tcamps/{id}": {
+            "delete": {
+                "tags": [
+                    "tcamps"
+                ],
+                "summary": "Удалить сборы",
+                "responses": {
+                    "204": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/tcamps/{id}/sportsman": {
+            "post": {
+                "tags": [
+                    "tcamps"
+                ],
+                "summary": "Запись спортсмена на сборы",
+                "parameters": [
+                    {
+                        "description": "Заявка",
+                        "name": "application",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/RegForTCampReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/RegForTCampResp"
+                        }
+                    },
+                    "400": {
+                        "description": "invalid ID supplied",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/login": {
+            "post": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Вход в аккаунт",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/LoginResp"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/signup": {
+            "post": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Создать пользователя",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/UserResp"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{id}": {
+            "get": {
+                "tags": [
+                    "sportsmen"
+                ],
+                "summary": "Получить пользователя по ID",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/UserResp"
+                        }
+                    },
+                    "400": {
+                        "description": "invalid ID supplied",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Обновить пароль и почту",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/UserResp"
+                        }
+                    },
+                    "401": {
+                        "description": "unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Удалить пользователя",
+                "responses": {
+                    "204": {
+                        "description": "ok",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{id}/competitions": {
+            "get": {
+                "tags": [
+                    "competitions"
+                ],
+                "summary": "Получить все соревнования организатора",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/CompResp"
+                        }
+                    },
+                    "401": {
+                        "description": "unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{id}/tcamps": {
+            "get": {
+                "tags": [
+                    "tcamps"
+                ],
+                "summary": "Получить все сборы организатора",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/TCampResp"
+                        }
+                    },
+                    "401": {
+                        "description": "unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "not found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "CoachIDReq": {
+            "description": "ID тренера",
+            "type": "object",
+            "properties": {
+                "c_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "CoachResp": {
+            "description": "Тренер",
+            "type": "object",
+            "properties": {
+                "birthday": {
+                    "type": "string"
+                },
+                "experience": {
+                    "type": "integer"
+                },
+                "gender": {
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "patronymic": {
+                    "type": "string"
+                },
+                "surname": {
+                    "type": "string"
+                }
+            }
+        },
+        "CompResp": {
+            "description": "Соревнование",
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "age": {
+                    "type": "string"
+                },
+                "antidoping": {
+                    "type": "boolean"
+                },
+                "beg_date": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "end_date": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "min_sports_cat": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "LoginResp": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string"
+                },
+                "user": {
+                    "description": "ExpiresIn time.Duration `json:\"expires_in\"`",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/dto.User"
+                        }
+                    ]
+                }
+            }
+        },
+        "RegForCompReq": {
+            "description": "Зарегистрировать спортсмена на соревнования",
+            "type": "object",
+            "properties": {
+                "sm_id": {
+                    "type": "string"
+                },
+                "start_clean_and_jerk": {
+                    "type": "integer"
+                },
+                "start_snatch": {
+                    "type": "integer"
+                },
+                "weight_category": {
+                    "type": "integer"
+                }
+            }
+        },
+        "RegForCompResp": {
+            "description": "Зарегистрировать спортсмена на соревнования",
+            "type": "object",
+            "properties": {
+                "comp_id": {
+                    "type": "string"
+                },
+                "sm_id": {
+                    "type": "string"
+                },
+                "start_clean_and_jerk": {
+                    "type": "integer"
+                },
+                "start_snatch": {
+                    "type": "integer"
+                },
+                "weight_category": {
+                    "type": "integer"
+                }
+            }
+        },
+        "RegForTCampReq": {
+            "description": "Зарегистрировать спортсмена на сборы",
+            "type": "object",
+            "properties": {
+                "sm_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "RegForTCampResp": {
+            "description": "Зарегистрировать спортсмена на сборы",
+            "type": "object",
+            "properties": {
+                "sm_id": {
+                    "type": "string"
+                },
+                "tcamp_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "ResultResp": {
+            "description": "Результат",
+            "type": "object",
+            "properties": {
+                "beg_date": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "clean_and_jerk": {
+                    "type": "integer"
+                },
+                "comp_id": {
+                    "type": "string"
+                },
+                "comp_name": {
+                    "type": "string"
+                },
+                "end_date": {
+                    "type": "string"
+                },
+                "place": {
+                    "type": "integer"
+                },
+                "sm_fullname": {
+                    "type": "string"
+                },
+                "snatch": {
+                    "type": "integer"
+                },
+                "weight_category": {
+                    "type": "integer"
+                }
+            }
+        },
+        "SmCoachResp": {
+            "description": "Запись спортсмена к тренеру",
+            "type": "object",
+            "properties": {
+                "c_id": {
+                    "type": "string"
+                },
+                "sm_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "SportsmanResp": {
+            "description": "Расширенная информация о спортсмене",
+            "type": "object",
+            "properties": {
+                "access_institution": {
+                    "type": "string"
+                },
+                "access_validity": {
+                    "type": "string"
+                },
+                "adoping_validity": {
+                    "description": "additional fields",
+                    "type": "string"
+                },
+                "birthday": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "moscow_team": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "patronymic": {
+                    "type": "string"
+                },
+                "sports_category": {
+                    "type": "string"
+                },
+                "surname": {
+                    "type": "string"
+                }
+            }
+        },
+        "TCampResp": {
+            "description": "Спортивные сборы",
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "beg_date": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "end_date": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
+        "UpdateSportsmanReq": {
+            "description": "Обновление информации о спортсмене",
+            "type": "object",
+            "properties": {
+                "access_institution": {
+                    "type": "string"
+                },
+                "access_validity": {
+                    "type": "string"
+                },
+                "adoping_validity": {
+                    "type": "string"
+                },
+                "moscow_team": {
+                    "type": "boolean"
+                },
+                "sports_category": {
+                    "type": "string"
+                }
+            }
+        },
+        "UserResp": {
+            "description": "Пользователь",
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "role": {
+                    "description": "Password string `json:\"password\"`",
+                    "type": "string"
+                },
+                "role_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.User": {
+            "description": "Пользователь",
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "role": {
+                    "description": "Password string `json:\"password\"`",
+                    "type": "string"
+                },
+                "role_id": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/styles.css"> 
+</head>
+<body>
+    <div class="container">
+        <h1>Регистрация</h1>
+        <form method="POST" action="/roles">
+
+            <fieldset>
+                <legend>Кто вы?:</legend>
+
+                <div>
+                <input type="radio" id="sportsman" name="role" value="sportsman" checked />
+                <label for="sportsman">Спортсмен</label>
+                </div>
+            
+                <div>
+                    <input type="radio" id="coach" name="role" value="coach" checked />
+                    <label for="coach">Тренер</label>
+                </div>
+
+                <div>
+                    <input type="radio" id="comp_org" name="role" value="competition organizer" checked />
+                    <label for="comp_org">Организатор соревнований</label>
+                </div>
+
+                <div>
+                    <input type="radio" id="tcamp_org" name="role" value="training camp organizer" checked />
+                    <label for="tcamp_org">Организатор сборов</label>
+                </div>
+
+                <div>
+                    <input type="radio" id="secretary" name="role" value="secretary" checked />
+                    <label for="secretary">Секретарь ФТАМ</label>
+                </div>
+            </fieldset>
+
+            <button type="submit">Продолжить</button>
+        </form>
+    </div>
+</body>
+</html>

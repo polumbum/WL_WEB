@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Результаты</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/styles.css"> 
+</head>
+<body>
+    <div class="container">
+        <h1>Мои результаты</h1>
+        <div class="table-container">
+            <table id="resTable">
+                <tr>
+                    <th>Соревнование</th>
+                    <th>Дата</th>
+                    <th>Весовая категория</th>
+                    <th>Рывок</th>
+                    <th>Толчок</th>
+                    <th>Место</th>
+                </tr>
+
+                {{range $index, $result := .Results}}
+                <tr>
+                    <td>{{(index $.Comps $index).Name}}</td>
+                    <td>{{(index $.Comps $index).BegDate}}-{{(index $.Comps $index).EndDate}}</td>
+                    <td>{{$result.WeightCategory}}</td>
+                    <td>{{$result.Snatch}}</td>
+                    <td>{{$result.CleanAndJerk}}</td>
+                    <td>{{$result.Place}}</td>
+                </tr>
+                {{end}}
+            </table>
+        </div>
+
+    </div>
+
+<script src="/static/js/script.js"></script>
+<script>
+    formatRangeDate(1, 'UTC-');
+</script>
+
+</body>
+</html>

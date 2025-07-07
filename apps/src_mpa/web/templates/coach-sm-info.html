@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Информация</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/styles.css"> 
+</head>
+<body>
+    <div class="container">
+        <h1>Информация о спортсменах</h1>
+        <div class="table-container">
+            <table>
+                <tr>
+                    <th>ФИО</th>
+                    <th>Дата рождения</th>
+                    <th>Пол</th>
+                    <th>Разряд/звание</th>
+                    <th>Сборная Москвы</th>
+                    <th>Антидопинг</th>
+                    <th>Допуск к соревнованиям</th>
+                    <th>Медицинское учреждение</th>
+                </tr>
+                {{range $i, $sportsman := .Records}}
+                    <tr>
+                        <td>{{$sportsman.Sportsman.Surname}} {{$sportsman.Sportsman.Name}} {{$sportsman.Sportsman.Patronymic}}</td>
+                        <td>{{$sportsman.Sportsman.Birthday}}</td>
+                        <td class="gender-column">{{$sportsman.Sportsman.Gender}}</td>
+                        <td>{{$sportsman.Sportsman.SportsCategory}}</td>
+                        <td class="bool-column">{{$sportsman.Sportsman.MoscowTeam}}</td>
+                        <td>{{if $sportsman.HasAD}}{{$sportsman.Antidoping.Validity}}{{end}}</td>
+                        <td>{{if $sportsman.HasCA}}{{$sportsman.Access.Validity}}{{end}}</td>
+                        <td>{{if $sportsman.HasCA}}{{$sportsman.Access.Institution}}{{end}}</td>
+                    </tr>
+                {{end}}
+            </table>
+        </div>
+    
+    </div>
+
+<script src="/static/js/script.js"></script>
+<script>
+    formatDate(1);
+    formatDate(5);
+    formatDate(6);
+    formatGenderCol();
+    formatBoolCol();
+</script>
+
+</body>
+</html>

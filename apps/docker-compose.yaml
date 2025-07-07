@@ -1,0 +1,198 @@
+services:
+  postgres_spa:
+    image: postgres:latest
+    container_name: postgres_spa
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_DB: "test_WL"
+      PGDATA: "/usr/local/pgsql/data"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d test_WL"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 10s
+    volumes:
+      - ./src/sql/create.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./src/sql/data/:/app_spa/sql/data
+      # - ./src/sql/create_psql_ro_user.sql:/docker-entrypoint-initdb.d/create_psql_ro_user.sql
+
+  postgres_replica:
+    image: postgres:latest
+    container_name: postgres_replica
+    ports:
+      - "5434:5432"
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_DB: "test_WL"
+      PGDATA: "/var/lib/postgresql/data" # Changed PGDATA path to avoid conflict
+      POSTGRES_HOST_AUTH_METHOD: "trust" # Allow replication connection without password for simplicity in this example
+    depends_on:
+      - postgres_spa
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d test_WL"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 10s
+    volumes:
+      - ./src/sql/replica_setup.sh:/docker-entrypoint-initdb.d/replica_setup.sh
+
+  app_spa:
+    build: ./src/
+    container_name: app_spa
+    ports:
+      - "8000:8000"
+    environment:
+      LOG_FILE_PATH: "./log/app.log"
+      CONFIG_FILE_PATH: "./internal/data_access/connect/config.json"
+      LIM_FILE_PATH: "./internal/service/limitations.json"
+      TEMPLATES_PATH: "./web/templates/"
+      STATIC_PATH: "./web/static/"
+      DB_USER: "postgres" 
+    tty: true
+    working_dir: /app_spa
+    volumes:
+      - ./log/:/app_spa/log
+    depends_on:
+      postgres_spa:
+        condition: service_healthy
+
+  app_spa_2:
+    build: ./src/
+    container_name: app_spa_2
+    ports:
+      - "8001:8000"
+    environment:
+      LOG_FILE_PATH: "./log/app_2.log"
+      CONFIG_FILE_PATH: "./internal/data_access/connect/config.json"
+      LIM_FILE_PATH: "./internal/service/limitations.json"
+      TEMPLATES_PATH: "./web/templates/"
+      STATIC_PATH: "./web/static/"
+      DB_USER: "readonly_user" # только на чтение
+    tty: true
+    working_dir: /app_spa
+    volumes:
+      - ./log/:/app_spa/log
+    depends_on:
+      postgres_spa:
+        condition: service_healthy
+
+  app_spa_3:
+    build: ./src/
+    container_name: app_spa_3
+    ports:
+      - "8002:8000"
+    environment:
+      LOG_FILE_PATH: "./log/app_3.log"
+      CONFIG_FILE_PATH: "./internal/data_access/connect/config.json"
+      LIM_FILE_PATH: "./internal/service/limitations.json"
+      TEMPLATES_PATH: "./web/templates/"
+      STATIC_PATH: "./web/static/"
+      DB_USER: "readonly_user" # с правами только на чтение
+    tty: true
+    working_dir: /app_spa
+    volumes:
+      - ./log/:/app_spa/log
+    depends_on:
+      postgres_spa:
+        condition: service_healthy
+  
+  app_spa_mirror:
+    build: ./src/
+    container_name: app_spa_mirror
+    ports:
+      - "8003:8000"
+    environment:
+      LOG_FILE_PATH: "./log/app_mirror.log" # Different log path
+      CONFIG_FILE_PATH: "./internal/data_access/connect/config_mirror.json" # Different config for replica
+      LIM_FILE_PATH: "./internal/service/limitations.json"
+      TEMPLATES_PATH: "./web/templates/"
+      STATIC_PATH: "./web/static/"
+      DB_USER: "postgres"
+    tty: true
+    working_dir: /app_spa
+    volumes:
+      - ./log/:/app_spa/log
+    depends_on:
+      postgres_replica:
+        condition: service_healthy
+
+  postgres_mpa:
+    image: postgres
+    container_name: postgres_mpa
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_DB: "test_WL_mpa"
+      PGDATA: "/usr/local/pgsql/data"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d test_WL_mpa"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    volumes:
+      - ./src_mpa/sql/create.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./src_mpa/sql/data/:/app_mpa/sql/data
+
+  app_mpa:
+    build: ./src_mpa/
+    container_name: app_mpa
+    ports:
+      - "8080:8000"
+    environment:
+      LOG_FILE_PATH: "./log/app.log"
+      CONFIG_FILE_PATH: "./internal/data_access/connect/config.json"
+      LIM_FILE_PATH: "./internal/service/limitations.json"
+      TEMPLATES_PATH: "./web/templates/"
+      STATIC_PATH: "./web/static/"
+    tty: true
+    working_dir: /app_mpa
+    volumes:
+      - ./log/:/app_mpa/log
+      - ./src_mpa/web/templates/:/app_mpa/web/templates/
+      - ./src_mpa/web/static/:/app_mpa/web/static/
+    depends_on:
+      postgres_mpa:
+        condition: service_healthy
+
+  pgadmin:
+    build:
+      context: .  
+      dockerfile: Dockerfile
+    container_name: pgadmin
+    ports:
+      - "5050:80"  # Доступ к pgAdmin через http://localhost:5050
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "admin@admin.com"
+      PGADMIN_DEFAULT_PASSWORD: "admin"
+      PGADMIN_LISTEN_PORT: 80
+      PGADMIN_SERVICE_MODE: "False"
+    depends_on:
+      - postgres_spa
+    volumes:
+      - ./servers.json:/pgadmin4/servers.json
+      - ./pgpass:/pgpass
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./src/static/:/usr/share/nginx/static/
+      - ./src_mpa/static/:/usr/share/nginx/static_mpa/
+      - ./src_mpa/templates/:/usr/share/nginx/templates/
+      - ../Readme.md:/Readme.md
+    depends_on:
+      - postgres_spa
+      - postgres_mpa
+      - app_mpa
+      - app_spa
+      - app_spa_mirror
+      - pgadmin

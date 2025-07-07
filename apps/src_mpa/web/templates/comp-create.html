@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Организация</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/styles.css"> 
+</head>
+<body>
+    <div class="container">
+        <h1>Организация соревнований</h1>
+        <form method="POST" action="/comp-create">
+            <label for="name">Название:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="city">Город:</label>
+            <input type="text" id="city" name="city" required>
+
+            <label for="address">Адрес:</label>
+            <input type="text" id="address" name="address" required>
+
+            <label for="begDate">Дата начала:</label>
+            <input type="date" id="begDate" name="begDate" required>
+
+            <label for="endDate">Дата окончания:</label>
+            <input type="date" id="endDate" name="endDate" required>
+
+            <label for="age">Возрастная группа:</label>
+            <select id="age" name="age">
+                {{range .AgeCat}}
+                    <option value="{{.}}">{{.}}</option>
+                {{end}}
+            </select>
+
+            <label for="cat">Минимальный разряд:</label>
+            <select id="cat" name="cat">
+                <option value="">Нет</option>
+                {{range .SportsCat}}
+                    <option value="{{.}}">{{.}}</option>
+                {{end}}
+            </select>
+
+            <label for="antidoping">Сертификат о знании антидопинговых правил:</label>
+            <select id="antidoping" name="antidoping">
+                <option value="false">Нет</option>
+                <option value="true">Да</option>
+            </select>
+
+            <button type="submit">Подтвердить</button>
+        </form>
+    </div>
+<script src="/static/js/script.js"></script>
+<script>
+    validateDates();
+</script>
+</body>
+</html>

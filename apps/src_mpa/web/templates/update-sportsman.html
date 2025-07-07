@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Спортсмен</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/styles.css"> 
+</head>
+<body>
+    <div class="container">
+        <h1>Обновление информации о спортсмене</h1>
+        <form method="POST" action="/update-sportsman">
+            <h2>Спортсмены</h2>
+            <input type="hidden" id="smID" name="smID">
+            <div class="table-container">
+                <table id="smTable">
+                    <tr>
+                        <th style="display:none;">ID</th>
+                        <th>ФИО</th>
+                        <th>Дата рождения</th>
+                    </tr>
+                    {{range .Sportsmen}}
+                    <tr class="interactive-tr">
+                        <td style="display:none;">{{.ID}}</td>
+                        <td>{{.Surname}} {{.Name}} {{.Patronymic}}</td>
+                        <td>{{.Birthday}}</td>
+                    </tr>
+                    {{end}}
+                </table>
+            </div>
+            
+            <div class="container-left">
+
+                <label for="cat">Разряд:</label>
+                <select id="cat" name="cat">
+                    <option value="">Без изменений</option>
+                    {{range .SportsCat}}
+                        <option value="{{.}}">{{.}}</option>
+                    {{end}}
+                </select>
+
+                <input type="hidden" id="team" name="team">
+                <fieldset>
+                    <legend>Зачисление в сборную команду:</legend>
+                    <div>
+                        <input type="radio" id="yes" name="moscowTeam" value="true" checked />
+                        <label for="yes">Без изменений</label>
+                    </div>
+                
+                    <div>
+                    <input type="radio" id="yes" name="moscowTeam" value="true"/>
+                    <label for="yes">Да</label>
+                    </div>
+                
+                    <div>
+                        <input type="radio" id="no" name="moscowTeam" value="false"/>
+                        <label for="no">Нет</label>
+                    </div>  
+
+                </fieldset>
+
+                <label for="antidoping">Срок действия сертификата о знании антидопинговых правил (не обязательно):</label>
+                <input type="date" id="antidoping" name="antidoping">
+
+                <fieldset>
+                    <legend>Медицинский допуск (не обязательно):</legend>
+
+                    <div>
+                    <label for="accessVal">Срок действия:</label>
+                    <input type="date" id="accessVal" name="accessVal">
+                    </div>
+
+                    <div>
+                    <label for="accessIns">Медицинское учреждение:</label>
+                    <input type="text" id="accessIns" name="accessIns">
+                    </div>
+                </fieldset>
+            </div>
+            <button type="submit">Подтвердить</button>
+        </form>
+    </div>
+
+<script src="/static/js/script.js"></script>
+<script>
+    formatDate(2);
+    validateSmID();
+    handleRowClick('smTable', 'smID');
+</script>
+
+</body>
+</html>

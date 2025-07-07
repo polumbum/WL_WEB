@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/styles.css"> 
+</head>
+<body>
+    <div class="container">
+        <h1>Регистрация на соревнования</h1>
+        <form method="POST" action="/coach-comp-reg">
+            <h2>Спортсмены</h2>
+            <input type="hidden" id="smID" name="smID">
+            <input type="hidden" id="gender" name="gender">
+            <div class="table-container">
+                <table id="smTable">
+                    <tr>
+                        <th style="display:none;">ID</th>
+                        <th>ФИО</th>
+                        <th>Дата рождения</th>
+                        <th>Пол</th>
+                        <th>Разряд</th>
+                        <th>Сборная Москвы</th>
+                    </tr>
+                    {{range .Sportsmen}}
+                    <tr class="interactive-tr">
+                        <td style="display:none;">{{.ID}}</td>
+                        <td>{{.Surname}} {{.Name}} {{.Patronymic}}</td>
+                        <td>{{.Birthday}}</td>
+                        <td class="gender-column">{{.Gender}}</td>
+                        <td>{{.SportsCategory}}</td>
+                        <td class="bool-column">{{.MoscowTeam}}</td>
+                    </tr>
+                    {{end}}
+                </table>
+            </div>
+
+            <h2>Соревнования</h2>
+            <input type="hidden" id="compID" name="compID">
+            <div class="table-container">
+                <table id="compTable">
+                    <tr>
+                        <th style="display:none;">ID</th>
+                        <th>Название</th>
+                        <th>Город</th>
+                        <th>Дата</th>
+                        <th>Возрастная группа</th>
+                        <th>Минимальный разряд</th>
+                        <th>Антидопинг</th>
+                    </tr>
+                    {{range .Comps}}
+                    <tr class="interactive-tr">
+                        <td style="display:none;">{{.ID}}</td>
+                        <td>{{.Name}}</td>
+                        <td>{{.City}}</td>
+                        <td>{{.BegDate}}-{{.EndDate}}</td>
+                        <td>{{.Age}}</td>
+                        <td>{{.MinSportsCategory}}</td>
+                        <td class="bool-column">{{.Antidoping}}</td>
+                    </tr>
+                    {{end}}
+                </table>
+            </div>
+
+
+            <label for="cat">Весовая категория:</label>
+            <select id="cat" name="cat" required>
+                <!-- Опции весовой категории будут добавлены динамически -->
+            </select>
+
+            <label for="snatch">Рывок (начальный вес):</label>
+            <input type="number" id="snatch" name="snatch" required>
+
+            <label for="caj">Толчок (начальный вес):</label>
+            <input type="number" id="caj" name="caj" required>
+
+            <button type="submit">Регистрация</button>
+        </form>
+    </div>
+
+<script src="/static/js/script.js"></script>
+<script>
+    formatBoolCol();
+    formatGenderCol();
+    formatDateTbl('smTable', 2);
+    formatRangeDateTbl('compTable', 3, 'UTC-');
+    handleRowClick('compTable', 'compID');
+    validateWeight();
+    validateCompID();
+    validateSmID();
+
+    var table = document.getElementById('smTable');
+    var rows = table.getElementsByTagName('tr');
+    
+    for (var i = 0; i < rows.length; i++) {
+        rows[i].onclick = function() {
+        if (this.parentNode.nodeName == 'THEAD') {
+            return;
+        }
+        var cells = this.getElementsByTagName('td');
+        var id = cells[0].innerText;
+        var gender = cells[3].innerText
+        
+        document.getElementById('smID').value = id;
+        document.getElementById('gender').value = gender
+
+        var selectedRow = table.querySelector('.selected');
+        if (selectedRow) {
+            selectedRow.classList.remove('selected');
+        }
+
+        this.classList.add('selected');
+
+        // Изменение опций весовой категории в зависимости от пола
+        var catSelect = document.getElementById('cat');
+        catSelect.innerHTML = ''; // Очистить текущие опции
+
+        if (gender === 'Мужчина') {
+            {{range .WeightMale}}
+                catSelect.innerHTML += '<option value="{{.}}">{{.}}</option>';
+            {{end}}
+        } else {
+            {{range .WeightFemale}}
+                catSelect.innerHTML += '<option value="{{.}}">{{.}}</option>';
+            {{end}}
+        }
+
+        };
+    }
+</script>
+</body>
+</html>

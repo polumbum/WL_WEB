@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Организация</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/styles.css"> 
+</head>
+<body>
+    <div class="container">
+        <h1>Организация сборов</h1>
+        <form method="POST" action="/tcamp-create">
+            <label for="city">Город:</label>
+            <input type="text" id="city" name="city" required>
+
+            <label for="address">Адрес:</label>
+            <input type="text" id="address" name="address" required>
+
+            <label for="begDate">Дата начала:</label>
+            <input type="date" id="begDate" name="begDate" required>
+
+            <label for="endDate">Дата окончания:</label>
+            <input type="date" id="endDate" name="endDate" required>
+
+            <button type="submit">Подтвердить</button>
+        </form>
+    </div>
+<script src="/static/js/script.js"></script>
+<script>
+    validateDates();
+</script>
+</body>
+</html>

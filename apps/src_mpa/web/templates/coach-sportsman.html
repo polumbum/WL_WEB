@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Запись</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/styles.css"> 
+</head>
+<body>
+    <div class="container">
+        <h1>Запись спортсмена к тренеру</h1>
+        <form action="/coach-sportsman" method="post">
+            <h2>Спортсмены</h2>
+            <input type="hidden" id="smID" name="smID">
+            <div class="table-container">
+                <table id="smTable">
+                    <tr>
+                        <th style="display:none;">ID</th>
+                        <th>ФИО</th>
+                        <th>Дата рождения</th>
+                    </tr>
+                    {{range .Sportsmen}}
+                    <tr class="interactive-tr">
+                        <td style="display:none;">{{.ID}}</td>
+                        <td>{{.Surname}} {{.Name}} {{.Patronymic}}</td>
+                        <td>{{.Birthday}}</td>
+                    </tr>
+                    {{end}}
+                </table>
+            </div>
+
+            <h2>Тренеры</h2>
+            <input type="hidden" id="cID" name="cID">
+            <div class="table-container">
+                <table id="cTable">
+                    <tr>
+                        <th style="display:none;">ID</th>
+                        <th>ФИО</th>
+                        <th>Дата рождения</th>
+                    </tr>
+                    {{range .Coaches}}
+                    <tr class="interactive-tr">
+                        <td style="display:none;">{{.ID}}</td>
+                        <td>{{.Surname}} {{.Name}} {{.Patronymic}}</td>
+                        <td>{{.Birthday}}</td>
+                    </tr>
+                    {{end}}
+                </table>
+            </div>
+            <button type="submit">Регистрация</button>
+        </form>
+    </div>
+
+<script src="/static/js/script.js"></script>
+<script>
+    formatDate(2);
+    validateCID();
+    validateSmID();
+    handleRowClick('smTable', 'smID');
+    handleRowClick('cTable', 'cID');
+</script>
+</body>
+</html>

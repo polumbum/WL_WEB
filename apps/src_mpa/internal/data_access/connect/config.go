@@ -1,0 +1,41 @@
+package connect
+
+import (
+	"encoding/json"
+	"fmt"
+	"os"
+)
+
+type DatabaseConfig struct {
+	Host     string `json:"host"`
+	Port     int    `json:"port"`
+	User     string `json:"user"`
+	Password string `json:"password"`
+	DBName   string `json:"dbname"`
+	Timezone string `json:"timezone"`
+}
+
+type Config struct {
+	Database DatabaseConfig `json:"database"`
+}
+
+func LoadConfig(filename string) (Config, error) {
+	var config Config
+	data, err := os.ReadFile(filename)
+	if err != nil {
+		return config, err
+	}
+
+	err = json.Unmarshal(data, &config)
+	if err != nil {
+		return config, err
+	}
+
+	return config, nil
+}
+
+func (dbConfig *DatabaseConfig) GetPostgresConnectionStr() string {
+	return fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable timezone=%s",
+		dbConfig.Host, dbConfig.Port, dbConfig.User, dbConfig.Password,
+		dbConfig.DBName, dbConfig.Timezone)
+}

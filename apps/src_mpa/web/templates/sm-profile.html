@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/styles.css"> 
+</head>
+<body>
+    <div class="container">
+        <h1>Профиль спортсмена</h1>
+        <p>ФИО: {{.Sportsman.Surname}} {{.Sportsman.Name}} {{.Sportsman.Patronymic}}</p>
+        <p>Дата рождения: <span class="bday">{{.Sportsman.Birthday}}</span></p>
+        <p>Пол: <span class="gender">{{.Sportsman.Gender}}</span></p>
+        <p>Разряд/звание: {{.Sportsman.SportsCategory}}</p>
+        <p>Сборная Москвы: <span class="moscowTeam">{{.Sportsman.MoscowTeam}}</span></p>
+        {{if .HasAD}}
+            <p>Сертификат о знании антидопинговых правил: до  <span class="adoping">{{.Antidoping.Validity}}</span></p>
+        {{end}}
+        {{if .HasCA}}
+            <p>Допуск к соревнованиям: до <span class="access">{{.Access.Validity}}</span></p>
+            <p>Медицинское учреждение: {{.Access.Institution}}</p>
+        {{end}}
+    </div>
+
+<script src="/static/js/script.js"></script>
+<script>
+    formatGender();
+    formatMoscowTeam();
+    formatDateSpan(".bday");
+    formatDateSpan(".adoping");
+    formatDateSpan(".access");
+</script>
+
+</body>
+</html>

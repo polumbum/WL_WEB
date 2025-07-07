@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Заявки</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/styles.css"> 
+</head>
+<body>
+    <div class="container">
+        <h1>Мои заявки на соревнования</h1>
+        <div class="table-container">
+            <table id="compTable">
+                <tr>
+                    <th>Название</th>
+                    <th>Город</th>
+                    <th>Адрес</th>
+                    <th>Дата</th>
+                    <th>Возрастная группа</th>
+                    <th>Минимальный разряд</th>
+                    <th>Антидопинг</th>
+                </tr>
+                {{range .Comps}}
+                    <tr>
+                        <td>{{.Name}}</td>
+                        <td>{{.City}}</td>
+                        <td>{{.Address}}</td>
+                        <td>{{.BegDate}}-{{.EndDate}}</td>
+                        <td>{{.Age}}</td>
+                        <td>{{.MinSportsCategory}}</td>
+                        <td class="bool-column">{{.Antidoping}}</td>
+                    </tr>
+                {{end}}
+            </table>
+        </div>
+
+        <h1>Мои заявки на сборы</h1>
+        <div class="table-container">
+            <table id="tCampTable">
+                <tr>
+                    <th>Город</th>
+                    <th>Адрес</th>
+                    <th>Дата</th>
+                </tr>
+                {{range .TCamps}}
+                    <tr>
+                        <td>{{.City}}</td>
+                        <td>{{.Address}}</td>
+                        <td>{{.BegDate}}-{{.EndDate}}</td>
+                    </tr>
+                {{end}}
+            </table>
+        </div>
+    </div>
+
+<script src="/static/js/script.js"></script>
+<script>
+    formatRangeDateTbl('compTable', 3, 'UTC-');
+    formatRangeDateTbl('tCampTable', 2, 'UTC-');
+    formatBoolCol();
+</script>
+
+</body>
+</html>

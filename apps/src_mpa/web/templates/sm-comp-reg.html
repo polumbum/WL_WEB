@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/styles.css"> 
+</head>
+<body>
+    <div class="container">
+        <h1>Регистрация на соревнования</h1>
+        <form method="POST" action="/sm-comp-reg">
+            <h2>Соревнования</h2>
+            <input type="hidden" id="compID" name="compID">
+
+            <div class="table-container">
+                <table id="compTable" class="table-layout">
+                    <tr>
+                        <th style="display:none;">ID</th>
+                        <th>Название</th>
+                        <th>Город</th>
+                        <th>Дата</th>
+                        <th>Возрастная группа</th>
+                        <th>Минимальный разряд</th>
+                        <th>Антидопинг</th>
+                    </tr>
+                    {{range .Comps}}
+                    <tr class="interactive-tr">
+                        <td style="display:none;">{{.ID}}</td>
+                        <td>{{.Name}}</td>
+                        <td>{{.City}}</td>
+                        <td>{{.BegDate}}-{{.EndDate}}</td>
+                        <td>{{.Age}}</td>
+                        <td>{{.MinSportsCategory}}</td>
+                        <td class="bool-column">{{.Antidoping}}</td>
+                    </tr>
+                    {{end}}
+                </table>
+            </div>
+
+            <label for="cat">Весовая категория:</label>
+            <select id="cat" name="cat" required>
+                {{if .Gender}}
+                    {{range .WeightFemale}}
+                        <option value="{{.}}">{{.}}</option>
+                    {{end}}
+                {{else}}
+                    {{range .WeightMale}}
+                        <option value="{{.}}">{{.}}</option>
+                    {{end}}
+                {{end}}
+            </select>
+
+            <label for="snatch">Рывок (начальный вес):</label>
+            <input type="number" id="snatch" name="snatch" required>
+
+            <label for="caj">Толчок (начальный вес):</label>
+            <input type="number" id="caj" name="caj" required>
+
+            <button type="submit">Регистрация</button>
+        </form>
+    </div>
+
+<script src="/static/js/script.js"></script>
+<script>
+    formatRangeDate(3, 'UTC-');
+    formatBoolCol();
+    handleRowClick('compTable', 'compID');
+    validateWeight();
+    validateCompID();
+</script>
+
+</body>
+</html>

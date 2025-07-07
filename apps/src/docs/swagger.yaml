@@ -1,0 +1,904 @@
+definitions:
+  CoachIDReq:
+    description: ID тренера
+    properties:
+      c_id:
+        type: string
+    type: object
+  CoachResp:
+    description: Тренер
+    properties:
+      birthday:
+        type: string
+      experience:
+        type: integer
+      gender:
+        type: boolean
+      id:
+        type: string
+      name:
+        type: string
+      patronymic:
+        type: string
+      surname:
+        type: string
+    type: object
+  CompResp:
+    description: Соревнование
+    properties:
+      address:
+        type: string
+      age:
+        type: string
+      antidoping:
+        type: boolean
+      beg_date:
+        type: string
+      city:
+        type: string
+      end_date:
+        type: string
+      id:
+        type: string
+      min_sports_cat:
+        type: string
+      name:
+        type: string
+    type: object
+  LoginResp:
+    properties:
+      token:
+        type: string
+      user:
+        allOf:
+        - $ref: '#/definitions/dto.User'
+        description: ExpiresIn time.Duration `json:"expires_in"`
+    type: object
+  RegForCompReq:
+    description: Зарегистрировать спортсмена на соревнования
+    properties:
+      sm_id:
+        type: string
+      start_clean_and_jerk:
+        type: integer
+      start_snatch:
+        type: integer
+      weight_category:
+        type: integer
+    type: object
+  RegForCompResp:
+    description: Зарегистрировать спортсмена на соревнования
+    properties:
+      comp_id:
+        type: string
+      sm_id:
+        type: string
+      start_clean_and_jerk:
+        type: integer
+      start_snatch:
+        type: integer
+      weight_category:
+        type: integer
+    type: object
+  RegForTCampReq:
+    description: Зарегистрировать спортсмена на сборы
+    properties:
+      sm_id:
+        type: string
+    type: object
+  RegForTCampResp:
+    description: Зарегистрировать спортсмена на сборы
+    properties:
+      sm_id:
+        type: string
+      tcamp_id:
+        type: string
+    type: object
+  ResultResp:
+    description: Результат
+    properties:
+      beg_date:
+        type: string
+      city:
+        type: string
+      clean_and_jerk:
+        type: integer
+      comp_id:
+        type: string
+      comp_name:
+        type: string
+      end_date:
+        type: string
+      place:
+        type: integer
+      sm_fullname:
+        type: string
+      snatch:
+        type: integer
+      weight_category:
+        type: integer
+    type: object
+  SmCoachResp:
+    description: Запись спортсмена к тренеру
+    properties:
+      c_id:
+        type: string
+      sm_id:
+        type: string
+    type: object
+  SportsmanResp:
+    description: Расширенная информация о спортсмене
+    properties:
+      access_institution:
+        type: string
+      access_validity:
+        type: string
+      adoping_validity:
+        description: additional fields
+        type: string
+      birthday:
+        type: string
+      gender:
+        type: boolean
+      id:
+        type: string
+      moscow_team:
+        type: boolean
+      name:
+        type: string
+      patronymic:
+        type: string
+      sports_category:
+        type: string
+      surname:
+        type: string
+    type: object
+  TCampResp:
+    description: Спортивные сборы
+    properties:
+      address:
+        type: string
+      beg_date:
+        type: string
+      city:
+        type: string
+      end_date:
+        type: string
+      id:
+        type: string
+    type: object
+  UpdateSportsmanReq:
+    description: Обновление информации о спортсмене
+    properties:
+      access_institution:
+        type: string
+      access_validity:
+        type: string
+      adoping_validity:
+        type: string
+      moscow_team:
+        type: boolean
+      sports_category:
+        type: string
+    type: object
+  UserResp:
+    description: Пользователь
+    properties:
+      email:
+        type: string
+      id:
+        type: string
+      role:
+        description: Password string `json:"password"`
+        type: string
+      role_id:
+        type: string
+    type: object
+  dto.User:
+    description: Пользователь
+    properties:
+      email:
+        type: string
+      id:
+        type: string
+      role:
+        description: Password string `json:"password"`
+        type: string
+      role_id:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: Приложение для спортcменов, тренеров, организаторов и представителей
+    ФТАМ - автоматизация деятельности ФТАМ.
+  title: ФТАМ API
+  version: "1.0"
+paths:
+  /coaches:
+    get:
+      parameters:
+      - description: ФИО
+        in: query
+        name: fullname
+        type: string
+      - description: Сортировка
+        in: query
+        name: sort
+        type: string
+      - description: Номер страницы
+        in: query
+        name: page
+        type: string
+      - description: Кол-во элементов на странице
+        in: query
+        name: batch
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/CoachResp'
+        "401":
+          description: unauthorized
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: Получить всех тренеров
+      tags:
+      - сoaches
+  /coaches/{id}:
+    delete:
+      responses:
+        "204":
+          description: ok
+          schema:
+            type: string
+        "401":
+          description: unauthorized
+          schema:
+            type: string
+        "404":
+          description: not found
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: Удалить тренера
+      tags:
+      - coaches
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/CoachResp'
+        "400":
+          description: invalid ID supplied
+          schema:
+            type: string
+        "401":
+          description: unauthorized
+          schema:
+            type: string
+        "404":
+          description: not found
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: Получить тренера по ID
+      tags:
+      - coaches
+  /coaches/{id}/sportsmen:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/CoachResp'
+        "400":
+          description: invalid ID supplied
+          schema:
+            type: string
+        "401":
+          description: unauthorized
+          schema:
+            type: string
+        "404":
+          description: not found
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: Получить всех спортсменов тренера
+      tags:
+      - coaches
+  /coaches/{id}/sportsmen/{sm_id}:
+    delete:
+      responses:
+        "204":
+          description: ok
+          schema:
+            type: string
+        "401":
+          description: unauthorized
+          schema:
+            type: string
+        "404":
+          description: not found
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: Отменить запись спортсмена к тренеру
+      tags:
+      - coaches
+  /coaches/{id}/sportsmen/results:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/CoachResp'
+        "400":
+          description: invalid ID supplied
+          schema:
+            type: string
+        "401":
+          description: unauthorized
+          schema:
+            type: string
+        "404":
+          description: not found
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: Получить все результаты спортсменов тренера
+      tags:
+      - coaches
+  /competitions:
+    get:
+      parameters:
+      - description: Название
+        in: query
+        name: name
+        type: string
+      - description: Город
+        in: query
+        name: city
+        type: string
+      - description: Сортировка
+        in: query
+        name: sort
+        type: string
+      - description: Номер страницы
+        in: query
+        name: page
+        type: string
+      - description: Кол-во элементов на странице
+        in: query
+        name: batch
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/CompResp'
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: Получить все соревнования
+      tags:
+      - competitions
+    post:
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/CompResp'
+        "401":
+          description: unauthorized
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: Создать соревнование
+      tags:
+      - competitions
+  /competitions/{id}:
+    delete:
+      responses:
+        "204":
+          description: ok
+          schema:
+            type: string
+        "401":
+          description: unauthorized
+          schema:
+            type: string
+        "404":
+          description: not found
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: Удалить соревнование
+      tags:
+      - competitions
+  /competitions/{id}/results:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ResultResp'
+            type: array
+        "400":
+          description: invalid ID supplied
+          schema:
+            type: string
+        "404":
+          description: not found
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: Получить все результаты соревнования
+      tags:
+      - competitions
+  /competitions/{id}/sportsman:
+    post:
+      parameters:
+      - description: Заявка
+        in: body
+        name: application
+        required: true
+        schema:
+          $ref: '#/definitions/RegForCompReq'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/RegForCompResp'
+        "400":
+          description: invalid ID supplied
+          schema:
+            type: string
+        "401":
+          description: unauthorized
+          schema:
+            type: string
+        "404":
+          description: not found
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: Запись спортсмена на соревнования
+      tags:
+      - competitions
+  /sportsmen:
+    get:
+      parameters:
+      - description: ФИО
+        in: query
+        name: fullname
+        type: string
+      - description: Сортировка
+        in: query
+        name: sort
+        type: string
+      - description: Номер страницы
+        in: query
+        name: page
+        type: string
+      - description: Кол-во элементов на странице
+        in: query
+        name: batch
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/SportsmanResp'
+            type: array
+        "401":
+          description: unauthorized
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: Получить всех спортсменов
+      tags:
+      - sportsmen
+  /sportsmen/{id}:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/SportsmanResp'
+        "400":
+          description: invalid ID supplied
+          schema:
+            type: string
+        "401":
+          description: unauthorized
+          schema:
+            type: string
+        "404":
+          description: not found
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: Получить спортсмена по ID
+      tags:
+      - sportsmen
+    patch:
+      description: Обновление информации о сертификате и допуске на соревнования
+      parameters:
+      - description: Спортсмен
+        in: body
+        name: sportsman
+        required: true
+        schema:
+          $ref: '#/definitions/UpdateSportsmanReq'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/SportsmanResp'
+        "400":
+          description: invalid ID supplied
+          schema:
+            type: string
+        "401":
+          description: unauthorized
+          schema:
+            type: string
+        "404":
+          description: not found
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: Обновление секретарем информации о спортсмене
+      tags:
+      - sportsmen
+  /sportsmen/{id}/coach:
+    post:
+      parameters:
+      - description: ID тренера
+        in: body
+        name: coach
+        required: true
+        schema:
+          $ref: '#/definitions/CoachIDReq'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/SmCoachResp'
+        "400":
+          description: invalid ID supplied
+          schema:
+            type: string
+        "401":
+          description: unauthorized
+          schema:
+            type: string
+        "404":
+          description: not found
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: Запись спортсмена к тренеру
+      tags:
+      - sportsmen
+  /sportsmen/{id}/results:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ResultResp'
+            type: array
+        "400":
+          description: invalid ID supplied
+          schema:
+            type: string
+        "401":
+          description: unauthorized
+          schema:
+            type: string
+        "404":
+          description: not found
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: Получить все результаты спортсмена
+      tags:
+      - sportsmen
+  /tcamps:
+    get:
+      parameters:
+      - description: Город
+        in: query
+        name: city
+        type: string
+      - description: Сортировка
+        in: query
+        name: sort
+        type: string
+      - description: Номер страницы
+        in: query
+        name: page
+        type: string
+      - description: Кол-во элементов на странице
+        in: query
+        name: batch
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/TCampResp'
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: Получить все сборы
+      tags:
+      - tcamps
+    post:
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/TCampResp'
+        "401":
+          description: unauthorized
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: Создать сборы
+      tags:
+      - tcamps
+  /tcamps/{id}:
+    delete:
+      responses:
+        "204":
+          description: ok
+          schema:
+            type: string
+        "401":
+          description: unauthorized
+          schema:
+            type: string
+        "404":
+          description: not found
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: Удалить сборы
+      tags:
+      - tcamps
+  /tcamps/{id}/sportsman:
+    post:
+      parameters:
+      - description: Заявка
+        in: body
+        name: application
+        required: true
+        schema:
+          $ref: '#/definitions/RegForTCampReq'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/RegForTCampResp'
+        "400":
+          description: invalid ID supplied
+          schema:
+            type: string
+        "401":
+          description: unauthorized
+          schema:
+            type: string
+        "404":
+          description: not found
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: Запись спортсмена на сборы
+      tags:
+      - tcamps
+  /users/{id}:
+    delete:
+      responses:
+        "204":
+          description: ok
+          schema:
+            type: string
+        "401":
+          description: unauthorized
+          schema:
+            type: string
+        "404":
+          description: not found
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: Удалить пользователя
+      tags:
+      - users
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/UserResp'
+        "400":
+          description: invalid ID supplied
+          schema:
+            type: string
+        "401":
+          description: unauthorized
+          schema:
+            type: string
+        "404":
+          description: not found
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: Получить пользователя по ID
+      tags:
+      - sportsmen
+    put:
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/UserResp'
+        "401":
+          description: unauthorized
+          schema:
+            type: string
+        "404":
+          description: not found
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: Обновить пароль и почту
+      tags:
+      - users
+  /users/{id}/competitions:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/CompResp'
+        "401":
+          description: unauthorized
+          schema:
+            type: string
+        "404":
+          description: not found
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: Получить все соревнования организатора
+      tags:
+      - competitions
+  /users/{id}/tcamps:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/TCampResp'
+        "401":
+          description: unauthorized
+          schema:
+            type: string
+        "404":
+          description: not found
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: Получить все сборы организатора
+      tags:
+      - tcamps
+  /users/login:
+    post:
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/LoginResp'
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: Вход в аккаунт
+      tags:
+      - users
+  /users/signup:
+    post:
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/UserResp'
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: Создать пользователя
+      tags:
+      - users
+swagger: "2.0"
